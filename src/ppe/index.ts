@@ -11,13 +11,14 @@ let context: CanvasRenderingContext2D;
 // specify the type with the first character of the patternName
 // (e: explosion, m: muzzle, s: spark, t: trail, j: jet)
 export function emit(patternName: string,
-  x: number, y: number, angle = 0, sizeScale = 1, countScale = 1, hue: number = null) {
+  x: number, y: number, angle = 0, sizeScale = 1, countScale = 1, hue: number = null,
+  velX = 0, velY = 0) {
   if (emitters[patternName] == null) {
     const random = new Random();
     random.setSeed(seed + getHashFromString(patternName));
     emitters[patternName] = new Emitter(patternName[0], sizeScale, countScale, hue, random);
   }
-  emitters[patternName].emit(x, y, angle);
+  emitters[patternName].emit(x, y, angle, velX, velY);
 }
 
 export function update() {
@@ -109,7 +110,7 @@ export class Emitter {
     this.count *= random.getForParam();
   }
 
-  emit(x: number, y: number, angle = 0) {
+  emit(x: number, y: number, angle = 0, velX = 0, velY = 0) {
     if (this.count < 1 && this.count < Math.random()) {
       return;
     }
@@ -117,6 +118,8 @@ export class Emitter {
       const p = new Particle();
       p.pos.x = x;
       p.pos.y = y;
+      p.vel.x = velX;
+      p.vel.y = velY;
       p.angle = angle + (Math.random() - 0.5) * this.angleDeflection;
       p.speed = this.base.speed *
         ((Math.random() * 2 - 1) * this.speedDeflection + 1);
@@ -137,6 +140,7 @@ export class Emitter {
 
 export class Particle {
   pos = new Vector();
+  vel = new Vector();
   size = 0;
   color: Color;
   angle = 0;
@@ -151,9 +155,11 @@ export class Particle {
   ticks = 0;
 
   update() {
-    this.pos.x += Math.cos(this.angle) * this.speed;
-    this.pos.y += Math.sin(this.angle) * this.speed;
+    this.pos.x += Math.cos(this.angle) * this.speed + this.vel.x;
+    this.pos.y += Math.sin(this.angle) * this.speed + this.vel.y;
     this.speed *= (1 - this.slowdownRatio);
+    this.vel.x *= 0.99;
+    this.vel.y *= 0.99;
     if (this.ticks >= this.endTicks) {
       return false;
     }

@@ -74,17 +74,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	// emit the particle.
 	// specify the type with the first character of the patternName
 	// (e: explosion, m: muzzle, s: spark, t: trail, j: jet)
-	function emit(patternName, x, y, angle, sizeScale, countScale, hue) {
+	function emit(patternName, x, y, angle, sizeScale, countScale, hue, velX, velY) {
 	    if (angle === void 0) { angle = 0; }
 	    if (sizeScale === void 0) { sizeScale = 1; }
 	    if (countScale === void 0) { countScale = 1; }
 	    if (hue === void 0) { hue = null; }
+	    if (velX === void 0) { velX = 0; }
+	    if (velY === void 0) { velY = 0; }
 	    if (emitters[patternName] == null) {
 	        var random_1 = new Random();
 	        random_1.setSeed(seed + getHashFromString(patternName));
 	        emitters[patternName] = new Emitter(patternName[0], sizeScale, countScale, hue, random_1);
 	    }
-	    emitters[patternName].emit(x, y, angle);
+	    emitters[patternName].emit(x, y, angle, velX, velY);
 	}
 	exports.emit = emit;
 	function update() {
@@ -177,8 +179,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.ticksDeflection *= random.getForParam();
 	        this.count *= random.getForParam();
 	    }
-	    Emitter.prototype.emit = function (x, y, angle) {
+	    Emitter.prototype.emit = function (x, y, angle, velX, velY) {
 	        if (angle === void 0) { angle = 0; }
+	        if (velX === void 0) { velX = 0; }
+	        if (velY === void 0) { velY = 0; }
 	        if (this.count < 1 && this.count < Math.random()) {
 	            return;
 	        }
@@ -186,6 +190,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var p = new Particle();
 	            p.pos.x = x;
 	            p.pos.y = y;
+	            p.vel.x = velX;
+	            p.vel.y = velY;
 	            p.angle = angle + (Math.random() - 0.5) * this.angleDeflection;
 	            p.speed = this.base.speed *
 	                ((Math.random() * 2 - 1) * this.speedDeflection + 1);
@@ -208,6 +214,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var Particle = (function () {
 	    function Particle() {
 	        this.pos = new Vector();
+	        this.vel = new Vector();
 	        this.size = 0;
 	        this.angle = 0;
 	        this.speed = 1;
@@ -218,9 +225,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.ticks = 0;
 	    }
 	    Particle.prototype.update = function () {
-	        this.pos.x += Math.cos(this.angle) * this.speed;
-	        this.pos.y += Math.sin(this.angle) * this.speed;
+	        this.pos.x += Math.cos(this.angle) * this.speed + this.vel.x;
+	        this.pos.y += Math.sin(this.angle) * this.speed + this.vel.y;
 	        this.speed *= (1 - this.slowdownRatio);
+	        this.vel.x *= 0.99;
+	        this.vel.y *= 0.99;
 	        if (this.ticks >= this.endTicks) {
 	            return false;
 	        }
@@ -592,7 +601,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    shot.isAlive = false;
 	                    w.isAlive = false;
 	                    // emit the 'e'xplosion particles
-	                    ppe.emit('e1', w.pos.x, w.pos.y);
+	                    ppe.emit('e1', w.pos.x, w.pos.y, 0, 1, 1, null, Math.cos(shot.angle), Math.sin(shot.angle));
 	                    sss.play('e1', 3);
 	                    score++;
 	                }

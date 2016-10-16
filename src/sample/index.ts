@@ -112,7 +112,7 @@ new p5(p => {
       });
       if ((--player.wallTicks) <= 0) {
         setWall(player.pos.x - Math.cos(player.angle) * 8,
-        player.pos.y - Math.sin(player.angle) * 8);
+          player.pos.y - Math.sin(player.angle) * 8);
         sss.play('c1');
         player.wallTicks = 80 / Math.sqrt(ticks / 1000 + 1);
       }
@@ -130,11 +130,11 @@ new p5(p => {
     wall.pixels = pag.generate([
       'xx',
       'xx'
-    ], {isMirrorX: true, rotationNum: 1});
+    ], { isMirrorX: true, rotationNum: 1 });
     wall.pos = { x, y };
     wall.angle = 0;
     wall.priority = 1;
-    wall.update = function() { };
+    wall.update = function () { };
     wall.name = 'wall';
     actors.push(wall);
     // emit the 's'park particles
@@ -146,7 +146,7 @@ new p5(p => {
     shot.pos = { x: player.pos.x, y: player.pos.y };
     shot.angle = player.angle;
     shot.ticks = 0;
-    shot.update = function() {
+    shot.update = function () {
       shot.pos.x += Math.cos(shot.angle) * 2;
       shot.pos.y += Math.sin(shot.angle) * 2;
       forEach(getActors('wall'), w => {
@@ -154,7 +154,8 @@ new p5(p => {
           shot.isAlive = false;
           w.isAlive = false;
           // emit the 'e'xplosion particles
-          ppe.emit('e1', w.pos.x, w.pos.y);
+          ppe.emit('e1', w.pos.x, w.pos.y,
+            0, 1, 1, null, Math.cos(shot.angle), Math.sin(shot.angle));
           sss.play('e1', 3);
           score++;
         }
