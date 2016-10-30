@@ -22,7 +22,10 @@ new p5(p => {
     canvas = p.createCanvas(128, 128).canvas;
     canvas.style.width = canvas.style.height = '512px';
     // set the ppe.options.canvas to specify the canvas to render particles
-    ppe.options.canvas = canvas;
+    ppe.setOptions({
+      canvas: canvas,
+      isLimitingColors: true
+    });
     context = canvas.getContext('2d');
     p.noStroke();
     pag.defaultOptions.isMirrorY = true;

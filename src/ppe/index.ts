@@ -1,6 +1,7 @@
 export let options = {
   scaleRatio: 1,
-  canvas: null
+  canvas: null,
+  isLimitingColors: false
 };
 
 let emitters = {};
@@ -36,6 +37,12 @@ export function setSeed(_seed: number = 0) {
 export function reset() {
   emitters = {};
   Particle.s = [];
+}
+
+export function setOptions(_options) {
+  for (let attr in _options) {
+    options[attr] = _options[attr];
+  }
 }
 
 export class Emitter {
@@ -242,6 +249,9 @@ export class Color {
         this.b *= 1 - saturation * f;
         break;
     }
+    if (options.isLimitingColors === true) {
+      this.limitRgb();
+    }
   }
 
   getStyle() {
@@ -258,6 +268,9 @@ export class Color {
     this.sparkled.r = clamp(this.r + this.sparkleRatio * (Math.random() * 2 - 1));
     this.sparkled.g = clamp(this.g + this.sparkleRatio * (Math.random() * 2 - 1));
     this.sparkled.b = clamp(this.b + this.sparkleRatio * (Math.random() * 2 - 1));
+    if (options.isLimitingColors === true) {
+      this.sparkled.limitRgb();
+    }
     return this.sparkled;
   }
 
@@ -270,7 +283,20 @@ export class Color {
     this.lerped.b = this.b * (1 - ratio) + other.b * ratio;
     this.lerped.sparkleRatio =
       this.sparkleRatio * (1 - ratio) + other.sparkleRatio * ratio;
+    if (options.isLimitingColors === true) {
+      this.lerped.limitRgb();
+    }
     return this.lerped;
+  }
+
+  limitRgb() {
+    this.r = this.limitColor(this.r);
+    this.g = this.limitColor(this.g);
+    this.b = this.limitColor(this.b);
+  }
+
+  limitColor(v) {
+    return v < 0.25 ? 0 : v < 0.75 ? 0.5 : 1;
   }
 }
 

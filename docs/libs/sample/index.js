@@ -66,7 +66,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	"use strict";
 	exports.options = {
 	    scaleRatio: 1,
-	    canvas: null
+	    canvas: null,
+	    isLimitingColors: false
 	};
 	var emitters = {};
 	var seed = 0;
@@ -107,6 +108,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    Particle.s = [];
 	}
 	exports.reset = reset;
+	function setOptions(_options) {
+	    for (var attr in _options) {
+	        exports.options[attr] = _options[attr];
+	    }
+	}
+	exports.setOptions = setOptions;
 	var Emitter = (function () {
 	    function Emitter(patternType, sizeScale, countScale, hue, random) {
 	        if (sizeScale === void 0) { sizeScale = 1; }
@@ -320,6 +327,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                this.b *= 1 - saturation * f;
 	                break;
 	        }
+	        if (exports.options.isLimitingColors === true) {
+	            this.limitRgb();
+	        }
 	    }
 	    Color.prototype.getStyle = function () {
 	        var r = Math.floor(this.r * 255);
@@ -334,6 +344,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.sparkled.r = clamp(this.r + this.sparkleRatio * (Math.random() * 2 - 1));
 	        this.sparkled.g = clamp(this.g + this.sparkleRatio * (Math.random() * 2 - 1));
 	        this.sparkled.b = clamp(this.b + this.sparkleRatio * (Math.random() * 2 - 1));
+	        if (exports.options.isLimitingColors === true) {
+	            this.sparkled.limitRgb();
+	        }
 	        return this.sparkled;
 	    };
 	    Color.prototype.getLerped = function (other, ratio) {
@@ -345,7 +358,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.lerped.b = this.b * (1 - ratio) + other.b * ratio;
 	        this.lerped.sparkleRatio =
 	            this.sparkleRatio * (1 - ratio) + other.sparkleRatio * ratio;
+	        if (exports.options.isLimitingColors === true) {
+	            this.lerped.limitRgb();
+	        }
 	        return this.lerped;
+	    };
+	    Color.prototype.limitRgb = function () {
+	        this.r = this.limitColor(this.r);
+	        this.g = this.limitColor(this.g);
+	        this.b = this.limitColor(this.b);
+	    };
+	    Color.prototype.limitColor = function (v) {
+	        return v < 0.25 ? 0 : v < 0.75 ? 0.5 : 1;
 	    };
 	    return Color;
 	}());
@@ -469,7 +493,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        canvas = p.createCanvas(128, 128).canvas;
 	        canvas.style.width = canvas.style.height = '512px';
 	        // set the ppe.options.canvas to specify the canvas to render particles
-	        ppe.options.canvas = canvas;
+	        ppe.setOptions({
+	            canvas: canvas,
+	            isLimitingColors: true
+	        });
 	        context = canvas.getContext('2d');
 	        p.noStroke();
 	        pag.defaultOptions.isMirrorY = true;

@@ -6,7 +6,10 @@ declare module 'ppe' {
   function getParticles();
   function setSeed(seed?: number);
   function reset();
-  let options: PpeOptions;
+  function setOptions(_options: Options);
+
+  let options: Options;
+
   interface Particle {
     pos: Vector;
     size: number;
@@ -22,8 +25,9 @@ declare module 'ppe' {
     b: number;
     getStyle(): string;
   }
-  interface PpeOptions {
-    scaleRatio?: number,
-    canvas?: HTMLCanvasElement
+  interface Options {
+    scaleRatio?: number;
+    canvas?: HTMLCanvasElement;
+    isLimitingColors?: boolean;
   }
 }
