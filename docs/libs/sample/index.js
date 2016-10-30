@@ -494,8 +494,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        canvas.style.width = canvas.style.height = '512px';
 	        // set the ppe.options.canvas to specify the canvas to render particles
 	        ppe.setOptions({
-	            canvas: canvas,
-	            isLimitingColors: true
+	            canvas: canvas
 	        });
 	        context = canvas.getContext('2d');
 	        p.noStroke();
