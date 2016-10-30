@@ -132,7 +132,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                this.base.slowdownRatio = 0.05;
 	                this.base.targetSize = 10;
 	                this.base.beginColor = new Color(hue, 1, 0.5, 0.3);
-	                this.base.middleColor = new Color(hue, 0.2, 1, 0.1);
+	                this.base.middleColor = new Color(hue, 0.2, 0.9, 0.1);
 	                this.base.endColor = new Color(hue, 0, 0, 0);
 	                this.base.middleTicks = 20;
 	                this.base.endTicks = 30;
@@ -145,7 +145,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                this.base.slowdownRatio = 0.025;
 	                this.base.targetSize = 5;
 	                this.base.beginColor = new Color(hue, 0.5, 0.5, 0.3);
-	                this.base.middleColor = new Color(hue, 1, 1, 0.3);
+	                this.base.middleColor = new Color(hue, 1, 0.9, 0.3);
 	                this.base.endColor = new Color(hue, 0.75, 0.75, 0.2);
 	                this.base.middleTicks = 10;
 	                this.base.endTicks = 20;
@@ -159,7 +159,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                this.base.slowdownRatio = 0.03;
 	                this.base.targetSize = patternType === 't' ? 3 : 7;
 	                this.base.beginColor = new Color(hue, 0.7, 0.7, 0.4);
-	                this.base.middleColor = new Color(hue, 1, 1, 0.2);
+	                this.base.middleColor = new Color(hue, 1, 0.9, 0.2);
 	                this.base.endColor = new Color(hue, 0.7, 0.7, 0.1);
 	                this.base.middleTicks = patternType === 't' ? 30 : 15;
 	                this.base.endTicks = patternType === 't' ? 40 : 20;
