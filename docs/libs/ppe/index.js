@@ -73,18 +73,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	// emit the particle.
 	// specify the type with the first character of the patternName
 	// (e: explosion, m: muzzle, s: spark, t: trail, j: jet)
-	function emit(patternName, x, y, angle, sizeScale, countScale, hue, velX, velY) {
+	function emit(patternName, x, y, angle, emitOptions) {
 	    if (angle === void 0) { angle = 0; }
-	    if (sizeScale === void 0) { sizeScale = 1; }
-	    if (countScale === void 0) { countScale = 1; }
-	    if (hue === void 0) { hue = null; }
-	    if (velX === void 0) { velX = 0; }
-	    if (velY === void 0) { velY = 0; }
+	    if (emitOptions === void 0) { emitOptions = {}; }
 	    if (emitters[patternName] == null) {
 	        var random_1 = new Random();
 	        random_1.setSeed(seed + getHashFromString(patternName));
-	        emitters[patternName] = new Emitter(patternName[0], sizeScale, countScale, hue, random_1);
+	        emitters[patternName] = new Emitter(patternName[0], emitOptions, random_1);
 	    }
+	    var velX = emitOptions.velX == null ? 0 : emitOptions.velX;
+	    var velY = emitOptions.velY == null ? 0 : emitOptions.velY;
 	    emitters[patternName].emit(x, y, angle, velX, velY);
 	}
 	exports.emit = emit;
@@ -113,19 +111,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	exports.setOptions = setOptions;
 	var Emitter = (function () {
-	    function Emitter(patternType, sizeScale, countScale, hue, random) {
-	        if (sizeScale === void 0) { sizeScale = 1; }
-	        if (countScale === void 0) { countScale = 1; }
-	        if (hue === void 0) { hue = null; }
+	    function Emitter(patternType, emitOptions, random) {
 	        this.base = new Particle();
 	        this.angleDeflection = 0;
 	        this.speedDeflection = 0.5;
 	        this.sizeDeflection = 0.5;
 	        this.ticksDeflection = 0.3;
 	        this.count = 1;
-	        if (hue == null) {
-	            hue = random.get01();
-	        }
+	        var hue = emitOptions.hue == null ? random.get01() : emitOptions.hue;
+	        var sizeScale = emitOptions.sizeScale == null ? 1 : emitOptions.sizeScale;
+	        var countScale = emitOptions.countScale == null ? 1 : emitOptions.countScale;
 	        switch (patternType) {
 	            case 'e':
 	                this.base.speed = 0.7;
@@ -169,6 +164,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	                this.ticksDeflection = 0.1;
 	                this.count = 0.5;
 	                break;
+	        }
+	        if (emitOptions.speed != null) {
+	            this.base.speed = emitOptions.speed;
+	        }
+	        if (emitOptions.slowdownRatio != null) {
+	            this.base.slowdownRatio = emitOptions.slowdownRatio;
 	        }
 	        this.base.speed *= sizeScale * exports.options.scaleRatio;
 	        this.base.targetSize *= sizeScale * exports.options.scaleRatio;

@@ -12,13 +12,15 @@ let context: CanvasRenderingContext2D;
 // specify the type with the first character of the patternName
 // (e: explosion, m: muzzle, s: spark, t: trail, j: jet)
 export function emit(patternName: string,
-  x: number, y: number, angle = 0, sizeScale = 1, countScale = 1, hue: number = null,
-  velX = 0, velY = 0) {
+  x: number, y: number, angle = 0,
+  emitOptions: any = {}) {
   if (emitters[patternName] == null) {
     const random = new Random();
     random.setSeed(seed + getHashFromString(patternName));
-    emitters[patternName] = new Emitter(patternName[0], sizeScale, countScale, hue, random);
+    emitters[patternName] = new Emitter(patternName[0], emitOptions, random);
   }
+  const velX = emitOptions.velX == null ? 0 : emitOptions.velX;
+  const velY = emitOptions.velY == null ? 0 : emitOptions.velY;
   emitters[patternName].emit(x, y, angle, velX, velY);
 }
 
@@ -53,11 +55,10 @@ export class Emitter {
   ticksDeflection = 0.3;
   count = 1;
 
-  constructor(patternType: string, sizeScale = 1, countScale = 1,
-    hue: number = null, random: Random) {
-    if (hue == null) {
-      hue = random.get01();
-    }
+  constructor(patternType: string, emitOptions: any, random: Random) {
+    const hue = emitOptions.hue == null ? random.get01() : emitOptions.hue;
+    const sizeScale = emitOptions.sizeScale == null ? 1 : emitOptions.sizeScale;
+    const countScale = emitOptions.countScale == null ? 1 : emitOptions.countScale;
     switch (patternType) {
       case 'e':
         this.base.speed = 0.7;
@@ -101,6 +102,12 @@ export class Emitter {
         this.ticksDeflection = 0.1;
         this.count = 0.5;
         break;
+    }
+    if (emitOptions.speed != null) {
+      this.base.speed = emitOptions.speed;
+    }
+    if (emitOptions.slowdownRatio != null) {
+      this.base.slowdownRatio = emitOptions.slowdownRatio;
     }
     this.base.speed *= sizeScale * options.scaleRatio;
     this.base.targetSize *= sizeScale * options.scaleRatio;

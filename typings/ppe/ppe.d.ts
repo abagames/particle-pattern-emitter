@@ -1,7 +1,7 @@
 declare module 'ppe' {
-  function emit(patternName: string, x: number, y: number,
-    angle?: number, sizeScale?: number, countScale?: number, hue?: number,
-    velX?: number, velY?: number);
+  function emit(patternName: string,
+    x: number, y: number, angle?: number,
+    emitOptions?: EmitOptions);
   function update();
   function getParticles();
   function setSeed(seed?: number);
@@ -29,5 +29,14 @@ declare module 'ppe' {
     scaleRatio?: number;
     canvas?: HTMLCanvasElement;
     isLimitingColors?: boolean;
+  }
+  interface EmitOptions {
+    sizeScale?: number;
+    countScale?: number;
+    hue?: number;
+    velX?: number;
+    velY?: number;
+    speed?: number;
+    slowdownRatio?: number;
   }
 }

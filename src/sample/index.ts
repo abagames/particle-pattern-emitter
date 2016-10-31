@@ -109,7 +109,7 @@ new p5(p => {
           sss.play('u1', 5);
           sss.stopBgm();
           // emit the 'e'xplosion particles
-          ppe.emit('e2', w.pos.x, w.pos.y, 0, 2, 2);
+          ppe.emit('e2', w.pos.x, w.pos.y, 0, { sizeScale: 2, countScale: 2 });
         }
       });
       if ((--player.wallTicks) <= 0) {
@@ -156,14 +156,14 @@ new p5(p => {
           shot.isAlive = false;
           w.isAlive = false;
           // emit the 'e'xplosion particles
-          ppe.emit('e1', w.pos.x, w.pos.y,
-            0, 1, 1, null, Math.cos(shot.angle), Math.sin(shot.angle));
+          ppe.emit('e1', w.pos.x, w.pos.y, 0,
+            { velX: Math.cos(shot.angle), velY: Math.sin(shot.angle) });
           sss.play('e1', 3);
           score++;
         }
       });
       // emit the 't'rail particles
-      ppe.emit('t1', shot.pos.x, shot.pos.y, shot.angle + Math.PI, 1, 0.5);
+      ppe.emit('t1', shot.pos.x, shot.pos.y, shot.angle + Math.PI, { countScale: 0.5 });
       if (shot.ticks > 60) {
         shot.isAlive = false;
       }
