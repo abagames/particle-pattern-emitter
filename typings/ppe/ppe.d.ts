@@ -6,6 +6,7 @@ declare module 'ppe' {
   function getParticles();
   function setSeed(seed?: number);
   function reset();
+  function clear();
   function setOptions(_options: Options);
 
   let options: Options;

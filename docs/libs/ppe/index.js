@@ -101,9 +101,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.setSeed = setSeed;
 	function reset() {
 	    emitters = {};
-	    Particle.s = [];
+	    clear();
 	}
 	exports.reset = reset;
+	function clear() {
+	    Particle.s = [];
+	}
+	exports.clear = clear;
 	function setOptions(_options) {
 	    for (var attr in _options) {
 	        exports.options[attr] = _options[attr];

@@ -38,6 +38,10 @@ export function setSeed(_seed: number = 0) {
 
 export function reset() {
   emitters = {};
+  clear();
+}
+
+export function clear() {
   Particle.s = [];
 }
 
