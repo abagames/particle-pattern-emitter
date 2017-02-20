@@ -6,14 +6,18 @@ export let options = {
 
 let emitters = {};
 let seed = 0;
-let context: CanvasRenderingContext2D;
+let pools: ParticlePool[] = [];
+let defaultPool: ParticlePool;
 
 // emit the particle.
 // specify the type with the first character of the patternName
 // (e: explosion, m: muzzle, s: spark, t: trail, j: jet)
 export function emit(patternName: string,
   x: number, y: number, angle = 0,
-  emitOptions: any = {}) {
+  emitOptions: any = {}, pool = defaultPool) {
+  if (pool == null && defaultPool == null) {
+    pool = defaultPool = new ParticlePool();
+  }
   if (emitters[patternName] == null) {
     const random = new Random();
     random.setSeed(seed + getHashFromString(patternName));
@@ -21,15 +25,18 @@ export function emit(patternName: string,
   }
   const velX = emitOptions.velX == null ? 0 : emitOptions.velX;
   const velY = emitOptions.velY == null ? 0 : emitOptions.velY;
-  emitters[patternName].emit(x, y, angle, velX, velY);
+  emitters[patternName].emit(x, y, angle, velX, velY, pool);
 }
 
 export function update() {
-  Particle.update();
+  for (let i = 0; i < pools.length; i++) {
+    const pool = pools[i];
+    pool.update();
+  }
 }
 
 export function getParticles() {
-  return Particle.s;
+  return defaultPool.particles;
 }
 
 export function setSeed(_seed: number = 0) {
@@ -42,7 +49,15 @@ export function reset() {
 }
 
 export function clear() {
-  Particle.s = [];
+  for (let i = 0; i < pools.length; i++) {
+    const pool = pools[i];
+    pool.clear();
+  }
+}
+
+export function clearPools() {
+  pools = [];
+  defaultPool = new ParticlePool();
 }
 
 export function setOptions(_options) {
@@ -128,7 +143,7 @@ export class Emitter {
     this.count *= random.getForParam();
   }
 
-  emit(x: number, y: number, angle = 0, velX = 0, velY = 0) {
+  emit(x: number, y: number, angle = 0, velX = 0, velY = 0, pool: ParticlePool) {
     if (this.count < 1 && this.count < Math.random()) {
       return;
     }
@@ -151,7 +166,7 @@ export class Emitter {
       p.beginColor = this.base.beginColor;
       p.middleColor = this.base.middleColor;
       p.endColor = this.base.endColor;
-      Particle.s.push(p);
+      pool.particles.push(p);
     }
   }
 }
@@ -172,7 +187,7 @@ export class Particle {
   endColor: Color;
   ticks = 0;
 
-  update() {
+  update(context: CanvasRenderingContext2D) {
     this.pos.x += Math.cos(this.angle) * this.speed + this.vel.x;
     this.pos.y += Math.sin(this.angle) * this.speed + this.vel.y;
     this.speed *= (1 - this.slowdownRatio);
@@ -198,20 +213,35 @@ export class Particle {
     }
     this.ticks++;
   }
+}
 
-  static s: Particle[] = [];
+export class ParticlePool {
+  particles: Particle[] = [];
+  context: CanvasRenderingContext2D;
 
-  static update() {
-    if (context == null && options.canvas != null) {
-      context = options.canvas.getContext('2d');
+  constructor(public canvas: HTMLCanvasElement = options.canvas) {
+    pools.push(this);
+  }
+
+  update() {
+    if (this.context == null && this.canvas != null) {
+      this.context = this.canvas.getContext('2d');
     }
-    for (let i = 0; i < Particle.s.length;) {
-      if (Particle.s[i].update() === false) {
-        Particle.s.splice(i, 1);
+    for (let i = 0; i < this.particles.length;) {
+      if (this.particles[i].update(this.context) === false) {
+        this.particles.splice(i, 1);
       } else {
         i++;
       }
     }
+  }
+
+  getParticles() {
+    return this.particles;
+  }
+
+  clear() {
+    this.particles = [];
   }
 }
 

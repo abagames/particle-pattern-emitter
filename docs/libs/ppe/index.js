@@ -69,13 +69,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	var emitters = {};
 	var seed = 0;
-	var context;
+	var pools = [];
+	var defaultPool;
 	// emit the particle.
 	// specify the type with the first character of the patternName
 	// (e: explosion, m: muzzle, s: spark, t: trail, j: jet)
-	function emit(patternName, x, y, angle, emitOptions) {
+	function emit(patternName, x, y, angle, emitOptions, pool) {
 	    if (angle === void 0) { angle = 0; }
 	    if (emitOptions === void 0) { emitOptions = {}; }
+	    if (pool === void 0) { pool = defaultPool; }
+	    if (pool == null && defaultPool == null) {
+	        pool = defaultPool = new ParticlePool();
+	    }
 	    if (emitters[patternName] == null) {
 	        var random_1 = new Random();
 	        random_1.setSeed(seed + getHashFromString(patternName));
@@ -83,15 +88,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    var velX = emitOptions.velX == null ? 0 : emitOptions.velX;
 	    var velY = emitOptions.velY == null ? 0 : emitOptions.velY;
-	    emitters[patternName].emit(x, y, angle, velX, velY);
+	    emitters[patternName].emit(x, y, angle, velX, velY, pool);
 	}
 	exports.emit = emit;
 	function update() {
-	    Particle.update();
+	    for (var i = 0; i < pools.length; i++) {
+	        var pool = pools[i];
+	        pool.update();
+	    }
 	}
 	exports.update = update;
 	function getParticles() {
-	    return Particle.s;
+	    return defaultPool.particles;
 	}
 	exports.getParticles = getParticles;
 	function setSeed(_seed) {
@@ -105,9 +113,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	exports.reset = reset;
 	function clear() {
-	    Particle.s = [];
+	    for (var i = 0; i < pools.length; i++) {
+	        var pool = pools[i];
+	        pool.clear();
+	    }
 	}
 	exports.clear = clear;
+	function clearPools() {
+	    pools = [];
+	    defaultPool = new ParticlePool();
+	}
+	exports.clearPools = clearPools;
 	function setOptions(_options) {
 	    for (var attr in _options) {
 	        exports.options[attr] = _options[attr];
@@ -189,7 +205,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.ticksDeflection *= random.getForParam();
 	        this.count *= random.getForParam();
 	    }
-	    Emitter.prototype.emit = function (x, y, angle, velX, velY) {
+	    Emitter.prototype.emit = function (x, y, angle, velX, velY, pool) {
 	        if (angle === void 0) { angle = 0; }
 	        if (velX === void 0) { velX = 0; }
 	        if (velY === void 0) { velY = 0; }
@@ -215,7 +231,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            p.beginColor = this.base.beginColor;
 	            p.middleColor = this.base.middleColor;
 	            p.endColor = this.base.endColor;
-	            Particle.s.push(p);
+	            pool.particles.push(p);
 	        }
 	    };
 	    return Emitter;
@@ -234,7 +250,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.endTicks = 60;
 	        this.ticks = 0;
 	    }
-	    Particle.prototype.update = function () {
+	    Particle.prototype.update = function (context) {
 	        this.pos.x += Math.cos(this.angle) * this.speed + this.vel.x;
 	        this.pos.y += Math.sin(this.angle) * this.speed + this.vel.y;
 	        this.speed *= (1 - this.slowdownRatio);
@@ -258,23 +274,38 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        this.ticks++;
 	    };
-	    Particle.update = function () {
-	        if (context == null && exports.options.canvas != null) {
-	            context = exports.options.canvas.getContext('2d');
+	    return Particle;
+	}());
+	exports.Particle = Particle;
+	var ParticlePool = (function () {
+	    function ParticlePool(canvas) {
+	        if (canvas === void 0) { canvas = exports.options.canvas; }
+	        this.canvas = canvas;
+	        this.particles = [];
+	        pools.push(this);
+	    }
+	    ParticlePool.prototype.update = function () {
+	        if (this.context == null && this.canvas != null) {
+	            this.context = this.canvas.getContext('2d');
 	        }
-	        for (var i = 0; i < Particle.s.length;) {
-	            if (Particle.s[i].update() === false) {
-	                Particle.s.splice(i, 1);
+	        for (var i = 0; i < this.particles.length;) {
+	            if (this.particles[i].update(this.context) === false) {
+	                this.particles.splice(i, 1);
 	            }
 	            else {
 	                i++;
 	            }
 	        }
 	    };
-	    Particle.s = [];
-	    return Particle;
+	    ParticlePool.prototype.getParticles = function () {
+	        return this.particles;
+	    };
+	    ParticlePool.prototype.clear = function () {
+	        this.particles = [];
+	    };
+	    return ParticlePool;
 	}());
-	exports.Particle = Particle;
+	exports.ParticlePool = ParticlePool;
 	var Vector = (function () {
 	    function Vector(x, y) {
 	        if (x === void 0) { x = 0; }
