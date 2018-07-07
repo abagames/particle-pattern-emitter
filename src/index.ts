@@ -12,9 +12,14 @@ let defaultPool: ParticlePool;
 // emit the particle.
 // specify the type with the first character of the patternName
 // (e: explosion, m: muzzle, s: spark, t: trail, j: jet)
-export function emit(patternName: string,
-  x: number, y: number, angle = 0,
-  emitOptions: any = {}, pool = defaultPool) {
+export function emit(
+  patternName: string,
+  x: number,
+  y: number,
+  angle = 0,
+  emitOptions: any = {},
+  pool = defaultPool
+) {
   if (pool == null && defaultPool == null) {
     pool = defaultPool = new ParticlePool();
   }
@@ -75,11 +80,12 @@ export class Emitter {
   count = 1;
 
   constructor(patternType: string, emitOptions: any, random: Random) {
-    const hue = emitOptions.hue == null ? random.get01() : emitOptions.hue;
+    const hue = emitOptions.hue == null ? random.get() : emitOptions.hue;
     const sizeScale = emitOptions.sizeScale == null ? 1 : emitOptions.sizeScale;
-    const countScale = emitOptions.countScale == null ? 1 : emitOptions.countScale;
+    const countScale =
+      emitOptions.countScale == null ? 1 : emitOptions.countScale;
     switch (patternType) {
-      case 'e':
+      case "e":
         this.base.speed = 0.7;
         this.base.slowdownRatio = 0.05;
         this.base.targetSize = 10;
@@ -91,9 +97,9 @@ export class Emitter {
         this.angleDeflection = Math.PI * 2;
         this.count = 15;
         break;
-      case 'm':
-      case 's':
-        this.base.speed = patternType === 'm' ? 1.5 : 0.5;
+      case "m":
+      case "s":
+        this.base.speed = patternType === "m" ? 1.5 : 0.5;
         this.base.slowdownRatio = 0.025;
         this.base.targetSize = 5;
         this.base.beginColor = new Color(hue, 0.5, 0.5, 0.3);
@@ -101,20 +107,20 @@ export class Emitter {
         this.base.endColor = new Color(hue, 0.75, 0.75, 0.2);
         this.base.middleTicks = 10;
         this.base.endTicks = 20;
-        this.angleDeflection = patternType === 'm' ?
-          0.3 * random.getForParam() : Math.PI * 2;
+        this.angleDeflection =
+          patternType === "m" ? 0.3 * random.getForParam() : Math.PI * 2;
         this.count = 10;
         break;
-      case 't':
-      case 'j':
-        this.base.speed = patternType === 't' ? 0.1 : 1;
+      case "t":
+      case "j":
+        this.base.speed = patternType === "t" ? 0.1 : 1;
         this.base.slowdownRatio = 0.03;
-        this.base.targetSize = patternType === 't' ? 3 : 7;
+        this.base.targetSize = patternType === "t" ? 3 : 7;
         this.base.beginColor = new Color(hue, 0.7, 0.7, 0.4);
         this.base.middleColor = new Color(hue, 1, 0.9, 0.2);
         this.base.endColor = new Color(hue, 0.7, 0.7, 0.1);
-        this.base.middleTicks = patternType === 't' ? 30 : 15;
-        this.base.endTicks = patternType === 't' ? 40 : 20;
+        this.base.middleTicks = patternType === "t" ? 30 : 15;
+        this.base.endTicks = patternType === "t" ? 40 : 20;
         this.angleDeflection = 0.5 * random.getForParam();
         this.speedDeflection = 0.1;
         this.sizeDeflection = 0.1;
@@ -143,7 +149,14 @@ export class Emitter {
     this.count *= random.getForParam();
   }
 
-  emit(x: number, y: number, angle = 0, velX = 0, velY = 0, pool: ParticlePool) {
+  emit(
+    x: number,
+    y: number,
+    angle = 0,
+    velX = 0,
+    velY = 0,
+    pool: ParticlePool
+  ) {
     if (this.count < 1 && this.count < Math.random()) {
       return;
     }
@@ -154,14 +167,17 @@ export class Emitter {
       p.vel.x = velX;
       p.vel.y = velY;
       p.angle = angle + (Math.random() - 0.5) * this.angleDeflection;
-      p.speed = this.base.speed *
-        ((Math.random() * 2 - 1) * this.speedDeflection + 1);
+      p.speed =
+        this.base.speed * ((Math.random() * 2 - 1) * this.speedDeflection + 1);
       p.slowdownRatio = this.base.slowdownRatio;
-      p.targetSize = this.base.targetSize *
+      p.targetSize =
+        this.base.targetSize *
         ((Math.random() * 2 - 1) * this.sizeDeflection + 1);
-      p.middleTicks = this.base.middleTicks *
+      p.middleTicks =
+        this.base.middleTicks *
         ((Math.random() * 2 - 1) * this.ticksDeflection + 1);
-      p.endTicks = this.base.endTicks *
+      p.endTicks =
+        this.base.endTicks *
         ((Math.random() * 2 - 1) * this.ticksDeflection + 1);
       p.beginColor = this.base.beginColor;
       p.middleColor = this.base.middleColor;
@@ -190,26 +206,34 @@ export class Particle {
   update(context: CanvasRenderingContext2D) {
     this.pos.x += Math.cos(this.angle) * this.speed + this.vel.x;
     this.pos.y += Math.sin(this.angle) * this.speed + this.vel.y;
-    this.speed *= (1 - this.slowdownRatio);
+    this.speed *= 1 - this.slowdownRatio;
     this.vel.x *= 0.99;
     this.vel.y *= 0.99;
     if (this.ticks >= this.endTicks) {
       return false;
     }
     if (this.ticks < this.middleTicks) {
-      this.color = this.beginColor.getLerped(this.middleColor,
-        this.ticks / this.middleTicks);
+      this.color = this.beginColor.getLerped(
+        this.middleColor,
+        this.ticks / this.middleTicks
+      );
       this.size += (this.targetSize - this.size) * 0.1;
     } else {
-      this.color = this.middleColor.getLerped(this.endColor,
-        (this.ticks - this.middleTicks) / (this.endTicks - this.middleTicks));
+      this.color = this.middleColor.getLerped(
+        this.endColor,
+        (this.ticks - this.middleTicks) / (this.endTicks - this.middleTicks)
+      );
       this.size *= 0.95;
     }
     this.color = this.color.getSparkled();
     if (context != null) {
       context.fillStyle = this.color.getStyle();
-      context.fillRect
-        (this.pos.x - this.size / 2, this.pos.y - this.size / 2, this.size, this.size);
+      context.fillRect(
+        this.pos.x - this.size / 2,
+        this.pos.y - this.size / 2,
+        this.size,
+        this.size
+      );
     }
     this.ticks++;
   }
@@ -225,9 +249,9 @@ export class ParticlePool {
 
   update() {
     if (this.context == null && this.canvas != null) {
-      this.context = this.canvas.getContext('2d');
+      this.context = this.canvas.getContext("2d");
     }
-    for (let i = 0; i < this.particles.length;) {
+    for (let i = 0; i < this.particles.length; ) {
       if (this.particles[i].update(this.context) === false) {
         this.particles.splice(i, 1);
       } else {
@@ -246,7 +270,7 @@ export class ParticlePool {
 }
 
 export class Vector {
-  constructor(public x = 0, public y = 0) { }
+  constructor(public x = 0, public y = 0) {}
 }
 
 export class Color {
@@ -256,8 +280,12 @@ export class Color {
   sparkled: Color;
   lerped: Color;
 
-  constructor
-    (public hue = 0, public saturation = 1, public value = 1, public sparkleRatio = 0) {
+  constructor(
+    public hue = 0,
+    public saturation = 1,
+    public value = 1,
+    public sparkleRatio = 0
+  ) {
     this.r = value;
     this.g = value;
     this.b = value;
@@ -306,9 +334,15 @@ export class Color {
     if (this.sparkled == null) {
       this.sparkled = new Color();
     }
-    this.sparkled.r = clamp(this.r + this.sparkleRatio * (Math.random() * 2 - 1));
-    this.sparkled.g = clamp(this.g + this.sparkleRatio * (Math.random() * 2 - 1));
-    this.sparkled.b = clamp(this.b + this.sparkleRatio * (Math.random() * 2 - 1));
+    this.sparkled.r = clamp(
+      this.r + this.sparkleRatio * (Math.random() * 2 - 1)
+    );
+    this.sparkled.g = clamp(
+      this.g + this.sparkleRatio * (Math.random() * 2 - 1)
+    );
+    this.sparkled.b = clamp(
+      this.b + this.sparkleRatio * (Math.random() * 2 - 1)
+    );
     if (options.isLimitingColors === true) {
       this.sparkled.limitRgb();
     }
@@ -346,7 +380,7 @@ function getHashFromString(str: string) {
   const len = str.length;
   for (let i = 0; i < len; i++) {
     const chr = str.charCodeAt(i);
-    hash = ((hash << 5) - hash) + chr;
+    hash = (hash << 5) - hash + chr;
     hash |= 0;
   }
   return hash;
@@ -368,36 +402,63 @@ class Random {
   z: number;
   w: number;
 
-  setSeed(v: number = -0x7fffffff) {
-    if (v === -0x7fffffff) {
-      v = Math.floor(Math.random() * 0x7fffffff);
+  get(fromOrTo: number = 1, to: number = null) {
+    if (to == null) {
+      to = fromOrTo;
+      fromOrTo = 0;
     }
-    this.x = v = 1812433253 * (v ^ (v >> 30))
-    this.y = v = 1812433253 * (v ^ (v >> 30)) + 1
-    this.z = v = 1812433253 * (v ^ (v >> 30)) + 2
-    this.w = v = 1812433253 * (v ^ (v >> 30)) + 3;
-    return this;
+    return (this.getToMaxInt() / 0xffffffff) * (to - fromOrTo) + fromOrTo;
   }
 
-  getInt() {
-    var t = this.x ^ (this.x << 11);
-    this.x = this.y;
-    this.y = this.z;
-    this.z = this.w;
-    this.w = (this.w ^ (this.w >> 19)) ^ (t ^ (t >> 8));
-    return this.w;
+  getInt(fromOrTo: number, to: number = null) {
+    if (to == null) {
+      to = fromOrTo;
+      fromOrTo = 0;
+    }
+    return (this.getToMaxInt() % (to - fromOrTo)) + fromOrTo;
   }
 
-  get01() {
-    return this.getInt() / 0x7fffffff;
+  getPm() {
+    return this.getInt(2) * 2 - 1;
+  }
+
+  select(values: any[]) {
+    return values[this.getInt(values.length)];
   }
 
   getForParam() {
-    return this.get01() + 0.5;
+    return this.get(0.5, 1.5);
+  }
+
+  setSeed(
+    w: number = null,
+    x = 123456789,
+    y = 362436069,
+    z = 521288629,
+    loopCount = 32
+  ) {
+    this.w = w != null ? w >>> 0 : Math.floor(Math.random() * 0xffffffff) >>> 0;
+    this.x = x >>> 0;
+    this.y = y >>> 0;
+    this.z = z >>> 0;
+    for (let i = 0; i < loopCount; i++) {
+      this.getToMaxInt();
+    }
+    return this;
+  }
+
+  getToMaxInt() {
+    const t = this.x ^ (this.x << 11);
+    this.x = this.y;
+    this.y = this.z;
+    this.z = this.w;
+    this.w = (this.w ^ (this.w >>> 19) ^ (t ^ (t >>> 8))) >>> 0;
+    return this.w;
   }
 
   constructor() {
     this.setSeed();
-    this.get01 = this.get01.bind(this);
+    this.get = this.get.bind(this);
+    this.getToMaxInt = this.getToMaxInt.bind(this);
   }
 }

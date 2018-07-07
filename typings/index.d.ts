@@ -74,10 +74,13 @@ declare class Random {
     y: number;
     z: number;
     w: number;
-    setSeed(v?: number): this;
-    getInt(): number;
-    get01(): number;
+    get(fromOrTo?: number, to?: number): number;
+    getInt(fromOrTo: number, to?: number): number;
+    getPm(): number;
+    select(values: any[]): any;
     getForParam(): number;
+    setSeed(w?: number, x?: number, y?: number, z?: number, loopCount?: number): this;
+    getToMaxInt(): number;
     constructor();
 }
 export {};
