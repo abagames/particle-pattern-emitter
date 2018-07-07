@@ -1,14 +1,29 @@
 {
   "name": "particle-pattern-emitter",
   "version": "1.0.0",
-  "description": "emit particles with a generated pattern",
-  "author": "ABA",
-  "license": "MIT",
+  "description": "Emit particles with a generated pattern",
+  "main": "build/index.js",
+  "typings": "typings/index.d.ts",
   "devDependencies": {
-    "glob": "^7.0.3",
-    "ts-loader": "^0.8.2",
-    "typescript": "^1.8.10",
-    "webpack-livereload-plugin": "^0.8.1"
+    "awesome-typescript-loader": "^5.2.0",
+    "gif-capture-canvas": "^1.0.1",
+    "pixel-art-gen": "^1.1.0",
+    "sounds-some-sounds": "^1.0.3",
+    "typescript": "^2.9.2",
+    "webpack": "^4.15.1",
+    "webpack-cli": "^3.0.8",
+    "webpack-serve": "^1.0.4"
   },
-  "dependencies": {}
+  "scripts": {
+    "start": "webpack-serve --sample=mines",
+    "build": "webpack",
+    "build_sample": "webpack --env.sample=mines"
+  },
+  "author": "abagames",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/abagames/particle-pattern-emitter.git"
+  },
+  "homepage": "https://github.com/abagames/particle-pattern-emitter"
 }
