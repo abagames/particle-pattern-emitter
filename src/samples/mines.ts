@@ -20,7 +20,7 @@ window.onload = () => {
   debug.enableShowingErrors();
   debug.initSeedUi(onSeedChanged);
   const p = document.createElement("p");
-  p.innerText = "[Click/Touch]: shot";
+  p.innerText = "[Mouse/Touch Left/Right]: turn";
   document.body.appendChild(p);
   canvas = document.createElement("canvas");
   canvas.width = canvas.height = screenSize;
