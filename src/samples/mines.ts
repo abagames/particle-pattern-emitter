@@ -16,7 +16,6 @@ let canvas;
 const screenSize = 128;
 
 window.onload = () => {
-  sss.init();
   debug.enableShowingErrors();
   debug.initSeedUi(onSeedChanged);
   const p = document.createElement("p");
@@ -30,12 +29,13 @@ window.onload = () => {
   ppe.setOptions({
     canvas: canvas
   });
-  context = canvas.getContext("2d");
   pag.setDefaultOptions({
     isMirrorY: true,
     rotationNum,
     scalePattern: 2
   });
+  sss.init();
+  onSeedChanged(8580576);
   setStars();
   document.addEventListener("mousedown", e => {
     onCursorDown(e.clientX, e.clientY);
@@ -88,11 +88,11 @@ function onCursorMove(x: number, y: number) {
 
 function update() {
   requestAnimationFrame(update);
-  sss.update();
   context.fillStyle = "black";
   context.fillRect(0, 0, screenSize, screenSize);
   /// ppe.update() should be called at each frame
   ppe.update();
+  sss.update();
   actors.sort((a, b) => a.priority - b.priority);
   forEach(actors, a => {
     a.update();
@@ -149,7 +149,7 @@ function setPlayer() {
         player.isAlive = false;
         isInGame = false;
         ticks = -60;
-        sss.play("u1", 5);
+        sss.playJingle("u1", true);
         sss.stopBgm();
         // emit the 'e'xplosion particles
         ppe.emit("e2", w.pos.x, w.pos.y, 0, { sizeScale: 2, countScale: 2 });
@@ -207,7 +207,7 @@ function setShot() {
           velX: Math.cos(shot.angle),
           velY: Math.sin(shot.angle)
         });
-        sss.play("e1", 3);
+        sss.playJingle("e1", true);
         score++;
       }
     });
