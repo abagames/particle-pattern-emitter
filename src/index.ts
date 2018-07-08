@@ -1,7 +1,7 @@
-export let options = {
-  scaleRatio: 1,
-  canvas: null,
-  isLimitingColors: false
+export let options: Options = {
+  scaleRatio: 1, // scale a size and a speed of particles
+  canvas: null, // set a drawing canvas
+  isLimitingColors: false // limit a number of using colors
 };
 
 let emitters = {};
@@ -17,7 +17,7 @@ export function emit(
   x: number,
   y: number,
   angle = 0,
-  emitOptions: any = {},
+  emitOptions: EmitOptions = {},
   pool = defaultPool
 ) {
   if (pool == null && defaultPool == null) {
@@ -65,7 +65,7 @@ export function clearPools() {
   defaultPool = new ParticlePool();
 }
 
-export function setOptions(_options) {
+export function setOptions(_options: Options) {
   for (let attr in _options) {
     options[attr] = _options[attr];
   }
@@ -79,7 +79,7 @@ export class Emitter {
   ticksDeflection = 0.3;
   count = 1;
 
-  constructor(patternType: string, emitOptions: any, random: Random) {
+  constructor(patternType: string, emitOptions: EmitOptions, random: Random) {
     const hue = emitOptions.hue == null ? random.get() : emitOptions.hue;
     const sizeScale = emitOptions.sizeScale == null ? 1 : emitOptions.sizeScale;
     const countScale =
@@ -461,4 +461,20 @@ class Random {
     this.get = this.get.bind(this);
     this.getToMaxInt = this.getToMaxInt.bind(this);
   }
+}
+
+export interface Options {
+  scaleRatio?: number;
+  canvas?: HTMLCanvasElement;
+  isLimitingColors?: boolean;
+}
+
+export interface EmitOptions {
+  velX?: number; // set a velocity
+  velY?: number;
+  hue?: number; // set a color hue
+  sizeScale?: number; // scale a size n times
+  countScale?: number; // scale a count n times
+  speed?: number; // override a speed
+  slowdownRatio?: number; // override a slowdown ratio
 }
