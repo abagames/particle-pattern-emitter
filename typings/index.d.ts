@@ -1,16 +1,12 @@
-export declare let options: {
-    scaleRatio: number;
-    canvas: any;
-    isLimitingColors: boolean;
-};
-export declare function emit(patternName: string, x: number, y: number, angle?: number, emitOptions?: any, pool?: ParticlePool): void;
+export declare let options: Options;
+export declare function emit(patternName: string, x: number, y: number, angle?: number, emitOptions?: EmitOptions, pool?: ParticlePool): void;
 export declare function update(): void;
 export declare function getParticles(): Particle[];
 export declare function setSeed(_seed?: number): void;
 export declare function reset(): void;
 export declare function clear(): void;
 export declare function clearPools(): void;
-export declare function setOptions(_options: any): void;
+export declare function setOptions(_options: Options): void;
 export declare class Emitter {
     base: Particle;
     angleDeflection: number;
@@ -18,7 +14,7 @@ export declare class Emitter {
     sizeDeflection: number;
     ticksDeflection: number;
     count: number;
-    constructor(patternType: string, emitOptions: any, random: Random);
+    constructor(patternType: string, emitOptions: EmitOptions, random: Random);
     emit(x: number, y: number, angle: number, velX: number, velY: number, pool: ParticlePool): void;
 }
 export declare class Particle {
@@ -82,5 +78,19 @@ declare class Random {
     setSeed(w?: number, x?: number, y?: number, z?: number, loopCount?: number): this;
     getToMaxInt(): number;
     constructor();
+}
+export interface Options {
+    scaleRatio?: number;
+    canvas?: HTMLCanvasElement;
+    isLimitingColors?: boolean;
+}
+export interface EmitOptions {
+    velX?: number;
+    velY?: number;
+    hue?: number;
+    sizeScale?: number;
+    countScale?: number;
+    speed?: number;
+    slowdownRatio?: number;
 }
 export {};
