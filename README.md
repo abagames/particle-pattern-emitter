@@ -4,6 +4,8 @@ Emit particles with a generated pattern.
 
 [demo](https://abagames.github.io/particle-pattern-emitter/index.html?mines)
 
+[![demo screenshot](https://abagames.github.io/particle-pattern-emitter/mines.gif)](https://abagames.github.io/particle-pattern-emitter/index.html?mines)
+
 ### How to use
 
 See [the sample code](https://github.com/abagames/particle-pattern-emitter/blob/master/src/samples/mines.ts).
