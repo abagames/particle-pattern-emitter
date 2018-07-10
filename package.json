@@ -1,6 +1,6 @@
 {
   "name": "particle-pattern-emitter",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Emit particles with a generated pattern",
   "main": "build/index.js",
   "typings": "typings/index.d.ts",
