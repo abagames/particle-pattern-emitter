@@ -22,7 +22,7 @@ module.exports = function(env) {
     config.output = {
       path: path.join(__dirname, "build"),
       filename: "index.js",
-      library: ["pag"],
+      library: ["ppe"],
       libraryTarget: "umd"
     };
     config.module.rules[0].query = {
