@@ -7,10 +7,10 @@
   "devDependencies": {
     "awesome-typescript-loader": "^5.2.0",
     "gif-capture-canvas": "^1.0.1",
-    "pixel-art-gen": "^1.1.0",
-    "sounds-some-sounds": "^1.0.3",
+    "pixel-art-gen": "^1.1.1",
+    "sounds-some-sounds": "^1.0.4",
     "typescript": "^2.9.2",
-    "webpack": "^4.15.1",
+    "webpack": "^4.16.0",
     "webpack-cli": "^3.0.8",
     "webpack-serve": "^1.0.4"
   },
