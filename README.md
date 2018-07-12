@@ -10,10 +10,20 @@ Emit particles with a generated pattern.
 
 See [the sample code](https://github.com/abagames/particle-pattern-emitter/blob/master/src/samples/mines.ts).
 
-Include [build/index.js](https://github.com/abagames/particle-pattern-emitter/blob/master/build/index.js) script or install from npm.
+Include [build/index.js](https://github.com/abagames/particle-pattern-emitter/blob/master/build/index.js) script,
+
+```
+  <script src="https://unpkg.com/particle-pattern-emitter/build/index.js"></script>
+```
+
+or install from npm.
 
 ```
 > npm i particle-pattern-emitter
+```
+
+```js
+import * as ppe from "particle-pattern-emitter";
 ```
 
 Call `update()` in a requestAnimation loop.
