@@ -12,7 +12,7 @@ See [the sample code](https://github.com/abagames/particle-pattern-emitter/blob/
 
 Include [build/index.js](https://github.com/abagames/particle-pattern-emitter/blob/master/build/index.js) script,
 
-```
+```html
   <script src="https://unpkg.com/particle-pattern-emitter/build/index.js"></script>
 ```
 
