@@ -202,6 +202,7 @@ export class Particle {
   middleColor: Color;
   endColor: Color;
   ticks = 0;
+  isAlive = true;
 
   update(context: CanvasRenderingContext2D) {
     this.pos.x += Math.cos(this.angle) * this.speed + this.vel.x;
@@ -210,6 +211,7 @@ export class Particle {
     this.vel.x *= 0.99;
     this.vel.y *= 0.99;
     if (this.ticks >= this.endTicks) {
+      this.isAlive = false;
       return false;
     }
     if (this.ticks < this.middleTicks) {
