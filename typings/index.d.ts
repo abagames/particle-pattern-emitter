@@ -1,5 +1,5 @@
 export declare let options: Options;
-export declare function emit(patternName: string, x: number, y: number, angle?: number, emitOptions?: EmitOptions, pool?: ParticlePool): void;
+export declare function emit(patternName: string, x: number, y: number, angle?: number, emitOptions?: EmitOptions, pool?: ParticlePool): Particle[];
 export declare function update(): void;
 export declare function getParticles(): Particle[];
 export declare function setSeed(_seed?: number): void;
@@ -15,7 +15,7 @@ export declare class Emitter {
     ticksDeflection: number;
     count: number;
     constructor(patternType: string, emitOptions: EmitOptions, random: Random);
-    emit(x: number, y: number, angle: number, velX: number, velY: number, pool: ParticlePool): void;
+    emit(x: number, y: number, angle: number, velX: number, velY: number, pool: ParticlePool): Particle[];
 }
 export declare class Particle {
     pos: Vector;
@@ -32,6 +32,7 @@ export declare class Particle {
     middleColor: Color;
     endColor: Color;
     ticks: number;
+    isAlive: boolean;
     update(context: CanvasRenderingContext2D): boolean;
 }
 export declare class ParticlePool {

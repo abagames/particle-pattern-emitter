@@ -4,7 +4,7 @@ export let options: Options = {
   isLimitingColors: false // limit a number of using colors
 };
 
-let emitters = {};
+let emitters: { [key: string]: Emitter } = {};
 let seed = 0;
 let pools: ParticlePool[] = [];
 let defaultPool: ParticlePool;
@@ -30,7 +30,7 @@ export function emit(
   }
   const velX = emitOptions.velX == null ? 0 : emitOptions.velX;
   const velY = emitOptions.velY == null ? 0 : emitOptions.velY;
-  emitters[patternName].emit(x, y, angle, velX, velY, pool);
+  return emitters[patternName].emit(x, y, angle, velX, velY, pool);
 }
 
 export function update() {
@@ -157,8 +157,9 @@ export class Emitter {
     velY = 0,
     pool: ParticlePool
   ) {
+    let addedParticles: Particle[] = [];
     if (this.count < 1 && this.count < Math.random()) {
-      return;
+      return addedParticles;
     }
     for (let i = 0; i < this.count; i++) {
       const p = new Particle();
@@ -182,8 +183,10 @@ export class Emitter {
       p.beginColor = this.base.beginColor;
       p.middleColor = this.base.middleColor;
       p.endColor = this.base.endColor;
-      pool.particles.push(p);
+      addedParticles.push(p);
     }
+    pool.particles = pool.particles.concat(addedParticles);
+    return addedParticles;
   }
 }
 
